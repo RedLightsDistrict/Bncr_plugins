@@ -15,8 +15,11 @@
 
  说明：
     扫码登录(rabbit)
+       // rabbit 的扫码地址
         set jd_cookie rabbit_qrcodeURL http://192.168.31.192:5709
-        set rabbit_qrcodeTOKEN CB2B8126557C5589F8CA94BD13587E86
+        // rabbit的对接token
+        set jd_cookie rabbit_qrcodeTOKEN CB2B8126557C5589F8CA94BD13587E86
+        // 无界的host 要保证对接工具能访问到该地址
         set system Host http://192.168.31.192:9090
         必要参数替换你自己的
     登录功能：
