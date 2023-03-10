@@ -45,12 +45,13 @@ module.exports = async s => {
             const pinDB = new BncrDB('pinDB');
             const pinDBKeyArr = await pinDB.keys() || [];
             for (const e of pinDBKeyArr) {
-                let v = await pinDB.get(e);
                 let [a, b] = e.split(':');
                 if (!sillyGirlpinDbToBncr[a]) continue;
                 let k = `${sillyGirlpinDbToBncr[a]}:${b}`;
+                let v = await pinDB.get(e);
                 v.Form = sillyGirlpinDbToBncr[a];
                 await pinDB.set(k, v);
+                await pinDB.del(e)
             }
         } catch (e) {
             console.error(e);
