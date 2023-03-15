@@ -24,7 +24,7 @@ module.exports = async s => {
     s.delMsg(s.getMsgId());
     await s.reply({
         type: 'image',
-        msg: jpgURL
+        path: jpgURL
     });
     open && fs.unlinkSync(jpgURL);
 };
