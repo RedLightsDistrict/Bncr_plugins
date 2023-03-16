@@ -2,7 +2,7 @@
  * @author Aming
  * @name 登录
  * @origin 红灯区
- * @version 1.0.0
+ * @version 1.0.1
  * @description Ark对接工具
  * @rule pt_key=[\S]{15,};[ ]*pt_pin=[\S]{2,};
  * @rule pin=[\S]{2,};[ ]*wskey=[\S]{15,};
