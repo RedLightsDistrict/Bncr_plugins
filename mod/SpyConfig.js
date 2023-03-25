@@ -80,8 +80,11 @@ let RspyList = {
         }
     ],
 
+    //非静默触发消息多少秒撤回 0不撤回
+    delMsgWaitTime: 10,
     //静默功能  默认false,会在监听到消息的地方回复监听结果 true则推送到静默推送设置的地方
-    Taboo: false,
+    Taboo: true,
+    TabooOriginalMsg: false /* 静默后推送的消息是否显示触发消息 */,
     //1 禁用任何日志输出 改为true后,不会向社交平台推送任何消息,且2 3开关失效 控制台除外
     DisableAllLogs: false,
     //2 禁用错误日志输出 改为true后,不会向社交平台推送任何错误消息 控制台除外
