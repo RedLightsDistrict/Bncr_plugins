@@ -44,10 +44,10 @@
       g可选groupId、userId，分别对应群和个人
       m为id
     栗子：
-      wxQianxun:userID:chao69686   
+      wxQianxun:userId:chao69686   
        ↑推送给wxQianxun平台的chao69686微信号
 
-      wxQianxun:userID:chao69686&wxQianxun:groupId:669865465&qq:userId:8888888
+      wxQianxun:userId:chao69686&wxQianxun:groupId:669865465&qq:userId:8888888
        ↑推送给微信平台的chao69686微信号
         推送给微信平台的669865465群号
         推送给qq平台的8888888qq号
@@ -57,7 +57,7 @@
 //监听群组或频道白名单id， 用英文,分割
 // -1001740866345 是https://t.me/mihuc_bot
 // 白名单对管理员无效，意味着管理员在任何地方发 都会触发
-const whiteList = [-1001740866345];
+const whiteList = [-1001740866345,-1001744932665];
 /* 无界添加频道白名单方法
 set groupWhitelist HumanTG:-1001740866345 true
 */
