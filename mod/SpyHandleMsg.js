@@ -13,9 +13,9 @@
 const request = require('util').promisify(require('request'));
 
 module.exports = async msg => {
-    /* 
+    /*
      当触发的消息中没有 export格式变量时,触发的消息会经过此模块解析
-     因此,你可以在此模块中添加你对export以外的消息进行解析,返回一个export线报 
+     因此,你可以在此模块中添加你对export以外的消息进行解析,返回一个export线报
     */
     const urlReg = /https:\/\/[A-Za-z0-9\-\._~:\/\?#\[\]@!$&'\*\+,%;\=]*/g;
     const codeReg = /[(|)|#|@|$|%|¥|￥|!|！][0-9a-zA-Z]{10,14}[(|)|#|@|$|%|¥|￥|!|！]/g;
@@ -28,9 +28,9 @@ module.exports = async msg => {
     let result = '';
     for (const link of [...urlArr, ...codeArr])
         urlToExport(link)?.forEach(e => (result += `export ${e.name}="${e.value}"\n`));
-    /* 
-    如果该导出的函数返回值不是一个string或不是一个 export格式的线报时,该msg会被放弃 
-    如果该模块中的代码报错 将强制返回空字符串 
+    /*
+    如果该导出的函数返回值不是一个string或不是一个 export格式的线报时,该msg会被放弃
+    如果该模块中的代码报错 将强制返回空字符串
     */
     return result ? `外部模块解析结果:\n${result}` : '';
 };
@@ -969,7 +969,7 @@ function urlToExport(url) {
                 name: r.redi,
             };
             if (+r.ori === -1) {
-                temp['value'] = url;
+                temp['value'] = encodeURI(url);
             } else if (r.ori.indexOf(' ') !== -1) {
                 //提取多参数作为变量值
                 let pn = r.ori.split(' ');
