@@ -57,7 +57,7 @@ module.exports = async s => {
 			let i = 1;
 			for (const e of keys) {
 				let r = await db.get(e, '');
-				logs += `${i}. ${r.from}:${r.groupId}=>${r.listen}|${r.reply}`;
+				logs += `${i}. ${r.from}:${r.groupId}=>${r.listen}|${r.reply}\n`;
 				i++;
 			}
 			return s.delMsg(await s.reply(logs || '空列表'), { wait: 10 });
