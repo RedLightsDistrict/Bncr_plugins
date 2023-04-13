@@ -4,10 +4,9 @@
  * @origin 红灯区
  * @version v1.0.0
  * @name 自动回复
- * @rule ^(添加自动回复) ([^\n]+) ([\s\S]+)$
  * @rule ^(删除自动回复) ([^\n]+)$
+ * @rule ^(添加自动回复) ([^\n]+) ([\s\S]+)$
  * @rule ^(自动回复列表)$
- * @rule ^(cs3)$
  * @rule [\s\S]+
  * @priority 1
  * @admin false
@@ -61,7 +60,7 @@ module.exports = async s => {
 				i++;
 			}
 			return s.delMsg(await s.reply(logs || '空列表'), { wait: 10 });
-		case '删除关键词':
+		case '删除自动回复':
 			let logs1 = `没有该关键词回复列表`;
 			for (const e of keys) {
 				let r = await db.get(e, '');
