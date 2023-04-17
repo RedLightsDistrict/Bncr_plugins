@@ -13,7 +13,7 @@
  * @disable false
  */
 
-/* 
+/*
 使用示例 当触发你好无界 回复:我是无界Bot,你好
 添加自动回复 你好无界 我是无界Bot,你好
 删除自动回复 你好无界
@@ -23,7 +23,7 @@ const { randomUUID } = require('crypto'),
 	db = new BncrDB('autoReplyInfo'),
 	delMsgTime = 15 /* 触发回复后撤回时间 秒  0不撤回 */,
     head = `自动触发消息:\n`; /* 头部消息 不需要='' */
-    
+
 
 /* mian */
 module.exports = async s => {
@@ -31,6 +31,7 @@ module.exports = async s => {
 		keys = await db.keys();
 	switch (s.param(1)) {
 		case '添加自动回复':
+			if (!(await s.isAdmin())) return;
 			if (!+msgInfo.groupId) return s.reply('非群组禁用');
 
 			let logs0 = '添加成功',
@@ -52,6 +53,7 @@ module.exports = async s => {
 			});
 			return s.delMsg(await s.reply(logs0), { wait: 10 });
 		case '自动回复列表':
+			if (!(await s.isAdmin())) return;
 			let logs = ``;
 			let i = 1;
 			for (const e of keys) {
@@ -61,6 +63,7 @@ module.exports = async s => {
 			}
 			return s.delMsg(await s.reply(logs || '空列表'), { wait: 10 });
 		case '删除自动回复':
+			if (!(await s.isAdmin())) return;
 			let logs1 = `没有该关键词回复列表`;
 			for (const e of keys) {
 				let r = await db.get(e, '');

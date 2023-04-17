@@ -35,7 +35,21 @@ module.exports = async msg => {
     return result ? `外部模块解析结果:\n${result}` : '';
 };
 
-/* 解析列表 取于白眼*/
+/**
+ * @Description 解析列表 取于白眼
+ * 修改记录
+ *   版本号[1.0.1] 修订日期[2023/4/13 9:57 AM]  修改内容 [增加多变量解析参数注释]
+ *     {
+ * 			keyword:"https://lzkj-isv.isvjcloud.com/app?a=xxxxx&b=xxxxxx",
+ * 			trans:[
+ * 				{
+ * 					ori: "a b", // 当多变量的时候按顺序填写需要在链接中提取的参数
+ * 					redi: "key",
+ * 					sep:"&" // 连接符  结果  export key="a&b"
+ * 				}
+ * 		},
+ *
+ */
 function ListS() {
     return [
         /******************KR库********************** */
