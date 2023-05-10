@@ -16,14 +16,14 @@
   {
       key: 'M_WX_POINT_DRAW_URL',
       val: 'https://cjhy-isv.isvjcloud.com/mc/wxPointShopView/pointExgShiWu?giftId=109668ef5a7f4e80ab88fd396087ec04&giftType=3&adsource=cjhdc&venderId=1000003168'
-  } 
+  }
   */
 
   /*
   写你的判断逻辑
-  
+
   */
-  /* 判断完毕返回一个 {key:xxx,val:xxx}对象 
+  /* 判断完毕返回一个 {key:xxx,val:xxx}对象
   如果返回值格式 有问题/逻辑判断超过60s/报错 均会强制返回原始Object
   */
   return await valueTransferUrl(envObject);
@@ -35,7 +35,7 @@
 * 版本号[1.0.1] 修订日期[2023/5/3 9:57 PM] author[Doraemon] 修改内容 [适配多变量篡改]
 * @author Doraemon
 * @param {*} envObject envObject
-* @returns 
+* @returns
 */
 async function valueTransferUrl (envObject) {
   let envKey = envObject.key;
@@ -45,22 +45,22 @@ async function valueTransferUrl (envObject) {
       const transArr = item.trans;
       return transArr.some((transItem) => {
           if (envKey === transItem.redi && envKey.startsWith(transItem.redi) && item.fullUrl) {
-           if (transItem.ori.includes(' ')) {
+           if (transItem.ori?.includes(' ')) {
              const [paramNames, fullUrl] = [transItem.ori.split(' '), item.fullUrl];
              if (!fullUrl) return true;
-         
+
              const envValArr = envVal.split(transItem.sep);
              const paramMap = new Map();
              paramNames.forEach((paramName, i) => {
                if (paramName) paramMap.set(paramName, envValArr[i]);
              });
-         
+
              let processedUrl = fullUrl;
              paramMap.forEach((paramValue, paramName) => {
                const placeholder = '${' + paramName + '}';
                processedUrl = processedUrl.replace(placeholder, paramValue);
              });
-         
+             envVal = processedUrl;
              return true;
            } else {
              envVal = `${item.fullUrl}${envVal}`;
@@ -83,7 +83,7 @@ async function valueTransferUrl (envObject) {
 * 修改记录
 * 版本号[1.0.1] 修订日期[2023/5/3 9:57 PM] author[Doraemon] 修改内容 [增加jinggeng邀请入会有礼篡改示例]
 * @author Doraemon
-* 
+*
 */
 function list() {
  return [
