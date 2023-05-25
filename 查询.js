@@ -1301,7 +1301,7 @@ module.exports = async s => {
                                 let t = new Date();
                                 t.setDate(t.getDate() + 1);
                                 t.setHours(0, 0, 0, 0);
-                                t = parseInt((t - 1) / 1000);
+                                t = parseInt((t - 1) / 1000) * 1000;
                                 //console.log(JSON.stringify(data.useRedInfo.redList))
                                 for (let vo of data.hongBaoList || []) {
                                     if (vo.orgLimitStr) {
