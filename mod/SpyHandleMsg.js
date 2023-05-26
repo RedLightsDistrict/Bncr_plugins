@@ -955,9 +955,10 @@ function ListS() {
 /* 诺兰口令解析接口 */
 async function nolanDecode(code) {
     try {
+        const dbUrl = await new BncrDB('AmingScript').get('deCodeHost', 'https://api.nolanstore.cc');
         return (
             await request({
-                url: `https://api.nolanstore.top/JComExchange`,
+                url: `${dbUrl}/JComExchange`,
                 method: 'post',
                 body: {
                     code,
