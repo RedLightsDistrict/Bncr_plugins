@@ -1,6 +1,8 @@
 module.exports = {
-    Wuxian_Cron: '0 */30 * * * *', //每30分钟扫wuxian
-    Shop_Cron: '0 0 */1 * * *', //每小时扫店铺
+    //不用定时可以注释掉
+    Wuxian_Cron: '0 * */1 * * *', //每1小时扫wuxian
+    Shop_Cron: '0 0 */2 * * *', //每2时扫店铺
+    
     //扫描到结果是否直接触发bncrspy进行解析运行. 仅dev可用
     Inline: true,
     //禁用任何日志输出 改为true后,不会向社交平台推送任何消息,且2 3开关失效 控制台除外
