@@ -1,4 +1,4 @@
-let RspyList = {
+const RspyList = {
     /* 监控信息配置 */
     SpyList: [
         {
@@ -79,7 +79,8 @@ let RspyList = {
             Id: '-1001776658413',
         }
     ],
-
+    /* 设置 管理员发送https的Url解析模式,  ''或者直接删除这一行为自动解析，spyjx:'j', 则发url链接时需要以j开头才会解析*/
+    spyjx:'',
     //非静默触发消息多少秒撤回 0不撤回
     delMsgWaitTime: 10,
     //静默功能  默认false,会在监听到消息的地方回复监听结果 true则推送到静默推送设置的地方
