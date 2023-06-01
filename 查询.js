@@ -2,13 +2,12 @@
  * @author Aming
  * @name 资产查询
  * @origin 红灯区
- * @version v1.1.5
+ * @version v1.1.4
  * @description 奶酪_资产查询 移植于ccwav
  * @name 奶酪-资产查询
- * @rule ^(查询|豆豆|红包查询) ([0-9]+) ?([0-9]+)?$
+ * @rule ^(查询|豆豆|红包查询) ([0-9]+) ([0-9]+)$
+ * @rule ^(查询|豆豆|红包查询) ([0-9]+)$
  * @rule ^(查询|豆豆|红包查询|白嫖检索)$
- * @rule ^(设置豆豆显示上限) ([0-9]+)$
- * @rule ^(历史收入) ([0-9]+) ?([0-9]+)? ?([0-9]+)?
  * @priority 100000
  * @admin false
  * @public false
@@ -29,7 +28,6 @@
      查询 1 2 ：查询面板管理中设置的第2个面板中的第1个ck的资产 （管理员命令）
     -
      豆豆：同上（输出格式与AUTO_SPY 豆 n类似）
-     历史收入 几天 几号ck 几号面板
     -
      红包查询：同上
     -
@@ -75,7 +73,6 @@ const ruleOpt = {
     hongbao: '红包查询',
     //白嫖检索命令
     baipiao: '白嫖检索',
-    lishi: '历史收入',
 };
 
 const AmTool = require('./mod/AmTool');
@@ -108,16 +105,6 @@ module.exports = async s => {
         if (deBug && arguments.length > 0) console.log(...arguments);
     }
 
-    let maxDay = 0,
-        maxDayId = '';
-    if (s.param(1) === '设置豆豆显示上限') {
-        if (!(await s.isAdmin())) return;
-        if (isNaN(s.param(2))) return s.reply('设置有误,必须为纯数字');
-        AmingScriptQl.set('beanLimit', +s.param(2));
-        return s.reply(`成功设置显示上限为:${s.param(2)}`);
-    }
-    const beanLimit = await AmingScriptQl.get('beanLimit');
-
     async function app() {
         if (qlDbArr.length === 0) return await s.reply('请先发“面板管理”添加面板');
         let qlNum, key;
@@ -131,19 +118,6 @@ module.exports = async s => {
             if (isNaN(s.param(2))) return await s.reply('请输入正确数字');
             key = s.param(2) - 1;
         } else key = -1;
-
-        if (s.param(1) === ruleOpt.lishi) {
-            if (isNaN(s.param(2))) return await s.reply('请输入正确天数');
-            maxDay = +s.param(2);
-            if (s.param(3)) {
-                if (isNaN(s.param(3))) return await s.reply('请输入正ck号');
-                key = s.param(3) - 1;
-            } else key = 0;
-            if (s.param(4)) {
-                if (isNaN(s.param(4))) return await s.reply('请输入正确面板号');
-                qlNum = s.param(4) - 1;
-            } else qlNum = defaultNum;
-        }
 
         if (qlNum > qlDbArr.length) return await s.reply('没有该序号面板');
         //找cookie
@@ -197,10 +171,6 @@ module.exports = async s => {
                 cookie = nowAllEnv1[key]['value'];
                 if (s.param(1) == ruleOpt.bean) mark = '豆豆';
                 else if (s.param(1) === ruleOpt.hongbao) mark = 'red';
-                else if (s.param(1) === ruleOpt.lishi) {
-                    maxDayId = await s.reply(`正在查询${maxDay}天收入....`);
-                    mark = '历史收入';
-                }
                 await GoGetJdInfo(cookie, mark);
             } else return s.reply('序号大于JD_COOKIE数量');
         } else {
@@ -404,13 +374,13 @@ module.exports = async s => {
 
         await TotalBean();
         if ($.beanCount == 0) {
-            console.log('数据获取失败，等待5秒后重试....');
-            await $.wait(5 * 1000);
+            console.log('数据获取失败，等待30秒后重试....');
+            await $.wait(30 * 1000);
             await TotalBean();
         }
         if ($.beanCount == 0) {
-            console.log('疑似获取失败,等待5秒后用第二个接口试试....');
-            await $.wait(5 * 1000);
+            console.log('疑似获取失败,等待10秒后用第二个接口试试....');
+            await $.wait(10 * 1000);
             var userdata = await getuserinfo();
             if (userdata.code == 1) {
                 $.beanCount = userdata.content.jdBean;
@@ -484,7 +454,7 @@ module.exports = async s => {
             if (msg !== '') {
                 return `【${userName}】\n${msg}`;
             }
-        } else if (['豆豆', '历史收入'].includes(mark)) return await GetDayBend();
+        } else if (mark === '豆豆') return await GetDayBend();
         async function showMsg() {
             ReturnMessage = '';
             var strsummary = '';
@@ -1314,9 +1284,9 @@ module.exports = async s => {
                             console.log(`${JSON.stringify(err)}`);
                             console.log(`redPacket API请求失败，请检查网路重试`);
                         } else {
+                            // console.log('data', data);
                             if (data) {
                                 data = JSON.parse(data);
-                                // console.log('data', data);
                                 $.jxRed = 0;
                                 $.jsRed = 0;
                                 $.jdRed = 0;
@@ -1346,15 +1316,12 @@ module.exports = async s => {
                                             continue;
                                         } else if (vo.orgLimitStr.includes('购物小程序')) {
                                             $.jdwxRed += parseFloat(vo.balance);
-
                                             if (vo['endTime'] === t) {
                                                 $.jdwxRedExpire += parseFloat(vo.balance);
                                             }
                                             continue;
                                         } else if (vo.orgLimitStr.includes('京东商城')) {
                                             $.jdRed += parseFloat(vo.balance);
-                                            // console.log(`vo['endTime']`, vo['endTime']);
-                                            // console.log(`t`, t);
                                             if (vo['endTime'] === t) {
                                                 $.jdRedExpire += parseFloat(vo.balance);
                                             }
@@ -1377,14 +1344,11 @@ module.exports = async s => {
                                             continue;
                                         }
                                     }
-
                                     $.jdGeneralRed += parseFloat(vo.balance);
                                     if (vo['endTime'] === t) {
                                         $.jdGeneralRedExpire += parseFloat(vo.balance);
                                     }
                                 }
-                                // console.log('$.message', $.message);
-                                // console.log('jdRedExpire', $.jdRedExpire);
 
                                 $.balance = (
                                     $.jxRed +
@@ -2972,34 +2936,27 @@ module.exports = async s => {
                 return b['amount'] - a['amount'];
             });
             Rankings.forEach(
-                e =>
-                    e['amount'] >= (beanLimit || 10) &&
-                    (rankingLogs += `${e['amount']}豆 【${e['eventMassage']}】\n`)
+                e => e['amount'] >= 10 && (rankingLogs += `${e['amount']}豆 【${e['eventMassage']}】\n`)
             );
-            beanLimit ? (rankingLogs += `\n设置了隐藏${beanLimit}豆以下信息...\n`) : '';
             rankingLogs = rankingLogs == '' ? rankingLogs : `【排行】\n` + rankingLogs + `...\n`;
             nowLogs = nowLogs == '' ? nowLogs : `【最新收入】\n` + nowLogs;
-            let dayLogs = maxDay ? `前${maxDay}天` : '今日';
-            let logs = `账号名称：${userName}\n${dayLogs}总收：${allJd}${
-                zhichu !== 0 ? `\n${dayLogs}总支：${-zhichu}` : ''
+
+            let logs = `账号名称：${userName}\n今日总收：${allJd}${
+                zhichu !== 0 ? `\n今日总支：${-zhichu}` : ''
             }\n\n${rankingLogs}${nowLogs}`;
             let sendID = await s.reply(logs);
             if (deleteMsgTime !== 0) s.delMsg(msgId, sendID, { wait: +deleteMsgTime });
-            if (maxDayId !== sendID) s.delMsg(maxDayId, { wait: +deleteMsgTime });
 
             async function beanList() {
-                // 当天时间戳0:0:0时间戳
-                const nowTime = new Date(new Date().setHours(0, 0, 0, 0)) / 1;
-                // 查询指定天数的时间戳
-                const tm1 = maxDay > 1 ? nowTime - 86400000 * (maxDay || 1) : nowTime;
-                // 查询指定天数的时间前一天的0:0:0时间戳
-                const tm = tm1 - 86400000;
-
+                //前一天的0:0:0时间戳
+                const tm =
+                    parseInt((Date.now() + 28800000) / 86400000) * 86400000 - 28800000 - 24 * 60 * 60 * 1000;
+                // 今天0:0:0时间戳
+                const tm1 = parseInt((Date.now() + 28800000) / 86400000) * 86400000 - 28800000;
                 let page = 1,
                     t = 0,
                     yesterdayArr = [],
                     todayArr = [];
-                // return [];
                 do {
                     let response = await getJingBeanBalanceDetail(page);
                     await sysMethod.sleep(0.1);
