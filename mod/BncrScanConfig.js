@@ -1,6 +1,6 @@
 module.exports = {
     //不用定时可以注释掉
-    Wuxian_Cron: '0 * */1 * * *', //每1小时扫wuxian
+    Wuxian_Cron: '0 0 */1 * * *', //每1小时扫wuxian
     Shop_Cron: '0 0 */2 * * *', //每2时扫店铺
     
     //扫描到结果是否直接触发bncrspy进行解析运行. 仅dev可用
